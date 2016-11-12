@@ -1,0 +1,27 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#| <Put a one-line description here>
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  ;;#+quicklisp (ql:quickload '() :silent t)
+  )
+
+(defpackage :ros.script.repl.3687660625
+  (:use :cl))
+(in-package :ros.script.repl.3687660625)
+
+;;;  "(+ 1 2) (+ 3 4)" or "(+ 1 2)" "(+ 3 4)"
+(defun main (&rest argv)
+  (dolist (cmd argv)
+    (let ((start 0)
+          (end (length cmd)))
+      (loop
+       (when (>= start end) (return))
+       (multiple-value-bind (form pos)
+           (read-from-string cmd t nil :start start)
+         (setq start pos)
+         (print (eval form)))))))
+
+;;; vim: set ft=lisp lisp:
